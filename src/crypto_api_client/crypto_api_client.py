@@ -10,15 +10,31 @@ API_KEY = os.environ.get("COINAPI_API_KEY")
 
 
 def main():
-    start = datetime.datetime(year=2022, month=1, day=1, hour=0)
-    end = datetime.datetime(year=2023, month=1, day=1, hour=0)
-    data = get_history(start, end)
+    """This app requests coinapi and gets the historical data of the
+    exchange rates of bitcoin in USD.
 
-    with open("./data/data.json", "w") as f:
-        json.dump(data, f)
+    The coinapi returns only 100 results, and it offers no pagination.
+    Therefore, this code implements an algorithm based on datetime calculation
+    to retrieve multiple slices of 100 days.
+    """
+    end = datetime.date.today()
+    start = end - datetime.timedelta(days=100)
+
+    count = 1
+
+    while start > datetime.date(year=2010, month=1, day=1):
+        print(f"{count}: Getting data from {start} to {end}")
+        data = get_history(start, end)
+
+        with open(f"./data/{start}--{end}.json", "w") as f:
+            json.dump(data, f)
+
+        end = start
+        start = end - datetime.timedelta(days=100)
+        count += 1
 
 
-def get_history(start: datetime.datetime, end: datetime.datetime) -> requests.Request:
+def get_history(start: datetime.date, end: datetime.date) -> requests.Request:
     return requests.get(
         BASE_URL + "/v1/exchangerate/BTC/USD/history",
         params={

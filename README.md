@@ -25,7 +25,7 @@ The script requires the `requests` package as dependency, so make sure you have 
 
 ### Journal
 
-#### Wed 15. February 2023
+#### Wed 15. February 2023, 00:30
 
 Interesting task, I think coding a solid solution will take more than half a day though. Sadly, I have quite a full schedule, and I could only start very late working on this challenge today (it's 00:30 now).
 
@@ -45,4 +45,8 @@ These is a compressed view of the logs of the app:
 ```
 
 It's late now, so I will stop working on this now, but I am looking forward to continue on it tomorrow. The 
+
+#### Wed 15. February 2023, 23:20
+
+Today I finished step 3. The data is in a sqlite database and retrieval works like a charm. Final part is the visualisation. I will take care of that tomorrow.
 

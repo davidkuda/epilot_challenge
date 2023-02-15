@@ -9,6 +9,13 @@ BASE_URL = "https://rest.coinapi.io"
 API_KEY = os.environ.get("COINAPI_API_KEY")
 
 
+class NoAPIKeyError(Exception):
+    pass
+
+class InvalidAPIKeyError(Exception):
+    pass
+
+
 def main():
     """This app requests coinapi and gets the historical data of the
     exchange rates of bitcoin in USD.
@@ -17,6 +24,11 @@ def main():
     Therefore, this code implements an algorithm based on datetime calculation
     to retrieve multiple slices of 100 days.
     """
+    if not API_KEY:
+        raise NoAPIKeyError(
+            "Make sure that you use a valid coinapi key as env var COINAPI_API_KEY"
+        )
+
     end = datetime.date.today()
     start = end - datetime.timedelta(days=100)
 
@@ -35,7 +47,7 @@ def main():
 
 
 def get_history(start: datetime.date, end: datetime.date) -> requests.Request:
-    return requests.get(
+    res = requests.get(
         BASE_URL + "/v1/exchangerate/BTC/USD/history",
         params={
             "period_id": "1DAY",
@@ -43,8 +55,14 @@ def get_history(start: datetime.date, end: datetime.date) -> requests.Request:
             "time_end": end.isoformat(),
         },
         headers={"X-CoinAPI-Key": "FC546E7C-76CF-4D89-9B01-69C5D64421E9"},
-    ).json()
+    )
+
+    if res.status_code != 200:
+        raise InvalidAPIKeyError("Your COINAPI_API_KEY returns an error.")
+
+    return res.json()
 
 
 if __name__ == "__main__":
     main()
+

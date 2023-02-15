@@ -43,6 +43,8 @@ class SQLiteRow:
     year: int
     month: int
     day: int
+    day_text: str
+    calendar_week: int
     spread: int
 
 
@@ -64,6 +66,8 @@ def main():
             year INTEGER,
             month INTEGER,
             day INTEGER,
+            day_text TEXT,
+            calendar_week INTEGER,
             spread INTEGER
         )
         """
@@ -102,6 +106,8 @@ def main():
                 year=date.year,
                 month=date.month,
                 day=date.day,
+                day_text=date.strftime("%a"),
+                calendar_week=date.isocalendar()[1],
                 spread=int(src_row.rate_high - src_row.rate_low),
             )
             row_as_tuple = (
@@ -109,12 +115,14 @@ def main():
                 dst_row.year,
                 dst_row.month,
                 dst_row.day,
+                dst_row.day_text,
+                dst_row.calendar_week,
                 dst_row.spread,
             )
             sqlite_rows.append(row_as_tuple)
 
         cur.executemany(
-            "INSERT INTO btc_usd_spread VALUES (?, ?, ?, ?, ?)", sqlite_rows
+            "INSERT INTO btc_usd_spread VALUES (?, ?, ?, ?, ?, ?, ?)", sqlite_rows
         )
         conn.commit()
         print(f"Inserted {len(sqlite_rows)} records into db.")

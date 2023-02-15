@@ -16,6 +16,10 @@ Crawl historic Bitcoin exchange value in USD and visualize in a heatmap similar 
 
 #### Get The Data
 
+0. make sure you are on the base directory of this project, i.e. not in the module directory.
+1. to download the data, execute `python src/crypto_api_client/crypto_api_client.py`
+2. to transform and load the data into the sqlite database, execute `python src/crypto_api_client/dbio.py`
+
 You need to get a key from [coinapi.com](https://docs.coinapi.io/) and export the key as the env variable "COINAPI_API_KEY". The python app gets the value with `os.environ.get`.
 
 Once you have done that, execute `python src/crypto_api_client/crypto_api_client.py`

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import datetime
-from difflib import context_diff
 import json
 import os
 import sqlite3
@@ -41,6 +40,9 @@ class SQLiteRow:
     """
 
     date: datetime.date
+    year: int
+    month: int
+    day: int
     spread: int
 
 
@@ -59,6 +61,9 @@ def main():
         """
         CREATE TABLE IF NOT EXISTS btc_usd_spread (
             date TEXT PRIMARY KEY,
+            year INTEGER,
+            month INTEGER,
+            day INTEGER,
             spread INTEGER
         )
         """
@@ -91,14 +96,26 @@ def main():
                 raise KeyError("Required field was not in src data.")
 
             date_str = src_row.time_open.split("T")[0]
+            date = datetime.date.fromisoformat(date_str)
             dst_row = SQLiteRow(
-                date=datetime.date.fromisoformat(date_str),
+                date=date,
+                year=date.year,
+                month=date.month,
+                day=date.day,
                 spread=int(src_row.rate_high - src_row.rate_low),
             )
-            row_as_tuple = (dst_row.date, dst_row.spread)
+            row_as_tuple = (
+                dst_row.date,
+                dst_row.year,
+                dst_row.month,
+                dst_row.day,
+                dst_row.spread,
+            )
             sqlite_rows.append(row_as_tuple)
 
-        cur.executemany("INSERT INTO btc_usd_spread VALUES (?, ?)", sqlite_rows)
+        cur.executemany(
+            "INSERT INTO btc_usd_spread VALUES (?, ?, ?, ?, ?)", sqlite_rows
+        )
         conn.commit()
         print(f"Inserted {len(sqlite_rows)} records into db.")
 

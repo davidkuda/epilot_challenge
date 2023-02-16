@@ -20,14 +20,12 @@ Crawl historic Bitcoin exchange value in USD and visualize in a heatmap similar 
 
 ### How to run the app
 
-#### Get The Data
-
 0. make sure you are on the base directory of this project, i.e. not in the module directory.
 1. to download the data, execute `python src/crypto_api_client/crypto_api_client.py`
 2. to transform and load the data into the sqlite database, execute `python src/crypto_api_client/dbio.py`
 3. To run the streamlit app with the visualisation, execute `streamlit run src/crypto_api_client/visualisation.py`
 
-#### Dependencies
+### Dependencies
 
 You need to get a key from [coinapi.com](https://docs.coinapi.io/) and export the key as the env variable `COINAPI_API_KEY`. The python app gets the value with `os.environ.get`.
 
@@ -39,6 +37,21 @@ Python Modules:
 - streamlit
 
 Make sure to install them in your preferred way.
+
+### Progress
+
+*Missing:*
+- individual rgb colors for the visualisation
+- polished visualisation, e.g. size
+- 2020 has a huge range in spreads, needs a max in the scale, and maybe another color for the outlier
+- the current year should show the rest of the year as empty fields
+- there should be a view today minus one year
+
+*Accomplished:*
+- Obtain BTC USD data from coinapi.com
+- Transform data, and load into sqlite3
+- Visualise the spread as a heatmap, similar to the contribution graph in GitHub
+- Choose the year
 
 ### Journal
 
@@ -67,3 +80,8 @@ It's late now, so I will stop working on this now, but I am looking forward to c
 
 Today I finished step 3. The data is in a sqlite database and retrieval works like a charm. Final part is the visualisation. I will take care of that tomorrow.
 
+#### Thu 16. February 2023, 18:00
+
+Ok, the PoC / MVP is accomplished. It still needs polishing (see "missing" above), but the core functionality is there.
+
+Thanks for giving me the challenge and for taking the time to review my work. Please don't hesitate to contact me in case you have questions.

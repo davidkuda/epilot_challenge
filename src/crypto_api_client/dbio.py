@@ -41,10 +41,9 @@ class SQLiteRow:
 
     date: datetime.date
     year: int
-    month: int
-    day: int
-    day_text: str
-    calendar_week: int
+    month: str
+    weekday: str
+    calweek: int
     spread: int
 
 
@@ -59,15 +58,15 @@ def main():
     conn = sqlite3.connect("data/sqlite3/data.db")
     cur = conn.cursor()
 
+    cur.execute("DROP TABLE IF EXISTS btc_usd_spread;")
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS btc_usd_spread (
             date TEXT PRIMARY KEY,
             year INTEGER,
             month INTEGER,
-            day INTEGER,
-            day_text TEXT,
-            calendar_week INTEGER,
+            weekday TEXT,
+            calweek INTEGER,
             spread INTEGER
         )
         """
@@ -101,31 +100,42 @@ def main():
 
             date_str = src_row.time_open.split("T")[0]
             date = datetime.date.fromisoformat(date_str)
+            if date.month == 5 and date.year == 2020:
+                print(src_row)
             dst_row = SQLiteRow(
                 date=date,
                 year=date.year,
-                month=date.month,
-                day=date.day,
-                day_text=date.strftime("%a"),
-                calendar_week=date.isocalendar()[1],
+                month=date.strftime("%b"),
+                weekday=date.strftime("%a"),
+                calweek=parse_calweek(date),
                 spread=int(src_row.rate_high - src_row.rate_low),
             )
             row_as_tuple = (
                 dst_row.date,
                 dst_row.year,
                 dst_row.month,
-                dst_row.day,
-                dst_row.day_text,
-                dst_row.calendar_week,
+                dst_row.weekday,
+                dst_row.calweek,
                 dst_row.spread,
             )
             sqlite_rows.append(row_as_tuple)
 
         cur.executemany(
-            "INSERT INTO btc_usd_spread VALUES (?, ?, ?, ?, ?, ?, ?)", sqlite_rows
+            "INSERT INTO btc_usd_spread VALUES (?, ?, ?, ?, ?, ?)", sqlite_rows
         )
         conn.commit()
         print(f"Inserted {len(sqlite_rows)} records into db.")
+
+
+def parse_calweek(date: datetime.date) -> int:
+    """To visualise correctly, we want to have 53 cal weeks in a year."""
+    calweek = date.isocalendar()[1]
+    if calweek == 52 and date.month == 1:
+        return 0
+    elif calweek == 1 and date.month > 1:
+        return 53
+    else:
+        return calweek
 
 
 if __name__ == "__main__":

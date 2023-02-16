@@ -1,8 +1,14 @@
 # Coding Challenge epilot Cologne
 
+![heatmap](https://images.ctfassets.net/pedj0c0bs6fa/6M8Y26dIAAGNid173RRXyk/36da8fc906de801a15d241f0b697e3d4/btc_usd_heatmap_seaborn.png)
+
 ### Task
 
 Crawl historic Bitcoin exchange value in USD and visualize in a heatmap similar to the GitHub contribution graph.
+
+### Preview
+
+![preview of app](https://images.ctfassets.net/pedj0c0bs6fa/cazkSK4A7ZI3kIjczGcLo/d173e2ea608cd16189873745701b6602/btc_usd_heatmap_streamlit.png)
 
 ### Strategy
 
@@ -19,13 +25,20 @@ Crawl historic Bitcoin exchange value in USD and visualize in a heatmap similar 
 0. make sure you are on the base directory of this project, i.e. not in the module directory.
 1. to download the data, execute `python src/crypto_api_client/crypto_api_client.py`
 2. to transform and load the data into the sqlite database, execute `python src/crypto_api_client/dbio.py`
+3. To run the streamlit app with the visualisation, execute `streamlit run src/crypto_api_client/visualisation.py`
 
-You need to get a key from [coinapi.com](https://docs.coinapi.io/) and export the key as the env variable "COINAPI_API_KEY". The python app gets the value with `os.environ.get`.
+#### Dependencies
 
-Once you have done that, execute `python src/crypto_api_client/crypto_api_client.py`
+You need to get a key from [coinapi.com](https://docs.coinapi.io/) and export the key as the env variable `COINAPI_API_KEY`. The python app gets the value with `os.environ.get`.
 
-The script requires the `requests` package as dependency, so make sure you have it available in your Python.
+Python Modules:
 
+- requests
+- seaborn
+- pandas
+- streamlit
+
+Make sure to install them in your preferred way.
 
 ### Journal
 
